@@ -37,5 +37,5 @@ usethis::use_github()
 
 
 
-#to create a new page, use above, then knit it, then use code below and commit + push updates out
+# to create a new page, use above, then knit it, then use code below and commit + push updates out
 hugodown::hugo_build(dest = "docs")
