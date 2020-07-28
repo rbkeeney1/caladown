@@ -1,82 +1,25 @@
-<!DOCTYPE html>
-<html lang="">
+Introduction
+------------
 
-  <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title> | A calade website</title>
+In my 1st ever TidyTuesday, I was inspired by Asmae Toumi's (@asmae\_toumi) recent twitter post to create a caladown site through github. Here's a link to the guide she posted: [Youtube Video](https://www.youtube.com/watch?v=HtQhG80MKQE)
 
-  <style>
-  	:root {
-  		--pagecolour: #333333;
-  		--maintext: #dddddd;
-  		--faded: #888888;
-  		--highlight: #ff69b4;
-  		--lowlight: #ba68c8;
-	}
-  </style>
+It took Asmae 15 minutes to deploy her site, it took me about 4 hours because I've never used git or created a github repo from R before today. After learning a few new cuss words, crashing R multiple times, learning about how to remove ".git/index.lock" files, creating tokens and SSH keys, and troubleshooting why my R "Git" repo would link and post... but not allow me to commit and push data I sort of gave up.
 
-  <link rel="stylesheet" href="../css/et_book.css" />
-  <link rel="stylesheet" href="../css/style.css" />
+Well, I mean that I downloaded Github for my desktop and dragged the new doc files into the repo.
 
-  
-<meta name="twitter:card" content="summary">
-<meta property="og:title" content="">
-<meta property="og:description" content="Introduction In my 1st ever TidyTuesday, I was inspired by Asmae Toumi&rsquo;s (@asmae_toumi) recent twitter post to create a caladown site through github. Here&rsquo;s a link to the guide she posted: Youtube Video
-It took Asmae 15 minutes to deploy her site, it took me about 4 hours because I&rsquo;ve never used git or created a github repo from R before today. After learning a few new cuss words, crashing R multiple times, learning about how to remove &ldquo;.">
-<meta property="og:image" content="https://djnavarro.github.io/hugo-calade/header/caladown.png">
+So. Much. Fun.
 
+*eventually I got if figured out*
 
-<link rel='stylesheet' href='../css/highlight.css' title='hl'>
+Getting Started
+---------------
 
+My Tidytuesday entry is more about creating a caladown site, using rMarkdown and some datapasta, and perhaps making a animated plot. For more on rMarkdown: [rMarkdown Intro](https://rmarkdown.rstudio.com/articles_intro.html)
 
-</head>
+1st, let's see how to install the datasets, for more detail check out the post [here](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-07-28/readme.md)
 
-
-  <body>
-    
-
-
-
-    <div class="main-content">
-      <nav>
-  <ul class="menu">
-    
-    <li><a href="../">Home</a></li>
-    
-    <li><a href="../about/">About</a></li>
-    
-    <li><a href="../post/">Posts</a></li>
-    
-    <li><a href="../project/">Projects</a></li>
-    
-    <li><a href="../tags/">Tags</a></li>
-    
-  </ul>
-</nav>
-
-      <div>
-  <h1></h1>
-  <h3>
-    
-  </h3>
-  <br><br>
-</div>
-
-
-      <main>
-        
-
-        <h2 id="introduction">Introduction</h2>
-<p>In my 1st ever TidyTuesday, I was inspired by Asmae Toumi&rsquo;s (@asmae_toumi) recent twitter post to create a caladown site through github. Here&rsquo;s a link to the guide she posted: <a href="https://www.youtube.com/watch?v=HtQhG80MKQE">Youtube Video</a></p>
-<p>It took Asmae 15 minutes to deploy her site, it took me about 4 hours because I&rsquo;ve never used git or created a github repo from R before today. After learning a few new cuss words, crashing R multiple times, learning about how to remove &ldquo;.git/index.lock&rdquo; files, creating tokens and SSH keys, and troubleshooting why my R &ldquo;Git&rdquo; repo would link and post&hellip; but not allow me to commit and push data I sort of gave up.</p>
-<p>Well, I mean that I downloaded Github for my desktop and dragged the new doc files into the repo.</p>
-<p>So. Much. Fun.</p>
-<p><em>eventually I got if figured out</em></p>
-<h2 id="getting-started">Getting Started</h2>
-<p>My Tidytuesday entry is more about creating a caladown site, using rMarkdown and some datapasta, and perhaps making a animated plot. For more on rMarkdown: <a href="https://rmarkdown.rstudio.com/articles_intro.html">rMarkdown Intro</a></p>
-<p>1st, let&rsquo;s see how to install the datasets, for more detail check out the post <a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-07-28/readme.md">here</a></p>
 <div class="highlight">
+
 <pre class='chroma'><code class='language-r' data-lang='r'><span class='c'>#install.packages("tidytuesdayR")</span>
 <span class='nf'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='k'><a href='https://github.com/thebioengineer/tidytuesdayR'>tidytuesdayR</a></span>)
 <span class='nf'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='k'><a href='http://tidyverse.tidyverse.org'>tidyverse</a></span>)
@@ -88,9 +31,13 @@ It took Asmae 15 minutes to deploy her site, it took me about 4 hours because I&
 <span class='c'>#&gt; -- <span style='font-weight: bold;'>Conflicts</span><span> ------------------------------------------------------------------------------------------------------------------------------- tidyverse_conflicts() --</span></span>
 <span class='c'>#&gt; <span style='color: #BB0000;'>&lt;U+2716&gt;</span><span> </span><span style='color: #0000BB;'>dplyr</span><span>::</span><span style='color: #00BB00;'>filter()</span><span> masks </span><span style='color: #0000BB;'>stats</span><span>::filter()</span></span>
 <span class='c'>#&gt; <span style='color: #BB0000;'>&lt;U+2716&gt;</span><span> </span><span style='color: #0000BB;'>dplyr</span><span>::</span><span style='color: #00BB00;'>lag()</span><span>    masks </span><span style='color: #0000BB;'>stats</span><span>::lag()</span></span></code></pre>
+
 </div>
-<p>After that, it&rsquo;s just a simple exercise to all in the data. BTW, ctrl+alt+i -&gt; new code section</p>
+
+After that, it's just a simple exercise to all in the data. BTW, ctrl+alt+i -&gt; new code section
+
 <div class="highlight">
+
 <pre class='chroma'><code class='language-r' data-lang='r'><span class='k'>tuesdata</span> <span class='o'>&lt;-</span> <span class='k'>tidytuesdayR</span>::<span class='nf'><a href='https://rdrr.io/pkg/tidytuesdayR/man/tt_load.html'>tt_load</a></span>(<span class='s'>'2020-07-28'</span>)
 <span class='c'>#&gt; --- Compiling #TidyTuesday Information for 2020-07-28 ----</span>
 <span class='c'>#&gt; --- There are 2 files available ---</span>
@@ -100,20 +47,31 @@ It took Asmae 15 minutes to deploy her site, it took me about 4 hours because I&
 <span class='c'>#&gt;   Downloading file 2 of 2: `penguins_raw.csv`</span>
 <span class='c'>#&gt; --- Download complete ---</span>
 <span class='k'>penguins</span> <span class='o'>&lt;-</span> <span class='k'>tuesdata</span><span class='o'>$</span><span class='k'>penguins</span></code></pre>
+
 </div>
-<h2 id="datapasta">Datapasta</h2>
-<p>Great, so we&rsquo;ve got the data&hellip; but we&rsquo;re making an rMarkdown post, and that means we want to make it pretty. There&rsquo;s a neat little package out there called datapasta&hellip; you can load it like so:</p>
+
+Datapasta
+---------
+
+Great, so we've got the data... but we're making an rMarkdown post, and that means we want to make it pretty. There's a neat little package out there called datapasta... you can load it like so:
+
 <div class="highlight">
+
 <pre class='chroma'><code class='language-r' data-lang='r'><span class='c'>#install.packages("datapasta")</span></code></pre>
+
 </div>
-<p>For more detail, you can visit <a href="https://github.com/MilesMcBain/datapasta">Datapasta</a>.</p>
-<p>Datapasta allows me to paste data from the web directly into my code in about 2 seconds.</p>
-<ol>
-<li>Control+C (windows)</li>
-<li>Control+Shift+T (after setting up the new keyboard shortcuts)</li>
-</ol>
-<p>Add in a little gt:gt() or knitr:kable() and you&rsquo;ve got yourself a nice little table to play with, <em>additional formatting purely optional</em>.</p>
+
+For more detail, you can visit [Datapasta](https://github.com/MilesMcBain/datapasta).
+
+Datapasta allows me to paste data from the web directly into my code in about 2 seconds.
+
+1.  Control+C (windows)
+2.  Control+Shift+T (after setting up the new keyboard shortcuts)
+
+Add in a little gt:gt() or knitr:kable() and you've got yourself a nice little table to play with, *additional formatting purely optional*.
+
 <div class="highlight">
+
 <pre class='chroma'><code class='language-r' data-lang='r'><span class='k'>tibble</span>::<span class='nf'><a href='https://tibble.tidyverse.org/reference/tribble.html'>tribble</a></span>(
                <span class='o'>~</span><span class='k'>variable</span>,    <span class='o'>~</span><span class='k'>class</span>,                                               <span class='o'>~</span><span class='k'>description</span>,
                <span class='s'>"species"</span>, <span class='s'>"integer"</span>,              <span class='s'>"Penguin species (Adelie, Gentoo, Chinstrap)"</span>,
@@ -127,10 +85,16 @@ It took Asmae 15 minutes to deploy her site, it took me about 4 hours because I&
      ) <span class='o'>%&gt;%</span> 
      <span class='k'>gt</span>::<span class='nf'><a href='https://rdrr.io/pkg/gt/man/gt.html'>gt</a></span>()
 </code></pre>
+
 </div>
-<h2 id="animated-plot">Animated plot</h2>
-<p>Alrighty, Now let&rsquo;s make simple plot, flipper length x bill length should do nicely.</p>
+
+Animated plot
+-------------
+
+Alrighty, Now let's make simple plot, flipper length x bill length should do nicely.
+
 <div class="highlight">
+
 <pre class='chroma'><code class='language-r' data-lang='r'><span class='k'>p1</span> <span class='o'>&lt;-</span> <span class='k'>penguins</span> <span class='o'>%&gt;%</span> 
      <span class='nf'>ggplot</span>(<span class='nf'>aes</span>(y = <span class='k'>flipper_length_mm</span>, x = <span class='k'>bill_length_mm</span>,color = <span class='k'>species</span>,group = <span class='k'>species</span>)) <span class='o'>+</span>
      <span class='nf'>geom_smooth</span>(method=<span class='k'>lm</span>) <span class='o'>+</span>
@@ -140,18 +104,26 @@ It took Asmae 15 minutes to deploy her site, it took me about 4 hours because I&
           caption = <span class='s'>"palmerpenguins data by Dr. Kristen Gorman"</span>,
           x = <span class='s'>"Bill Length (mm)"</span>, 
           y = <span class='s'>"Flipper Length (mm)"</span>)</code></pre>
+
 </div>
-<p>Let&rsquo;s see what our plot looks like:</p>
+
+Let's see what our plot looks like:
+
 <div class="highlight">
+
 <pre class='chroma'><code class='language-r' data-lang='r'><span class='k'>p1</span>
 <span class='c'>#&gt; `geom_smooth()` using formula 'y ~ x'</span>
 <span class='c'>#&gt; Warning: Removed 2 rows containing non-finite values (stat_smooth).</span>
 <span class='c'>#&gt; Warning: Removed 2 rows containing missing values (geom_point).</span>
 </code></pre>
-<p><img src="figs/print_it-1.png" width="700px" style="display: block; margin: auto;" /></p>
+<img src="figs/print_it-1.png" width="700px" style="display: block; margin: auto;" />
+
 </div>
-<p>To create an animation from our picture, we need to the gganimate library&hellip; and I like to use glue to easily paste labels from data, here I use the &ldquo;closest_state&rdquo; command to update the subtitle with which species is being displayed.</p>
+
+To create an animation from our picture, we need to the gganimate library... and I like to use glue to easily paste labels from data, here I use the "closest\_state" command to update the subtitle with which species is being displayed.
+
 <div class="highlight">
+
 <pre class='chroma'><code class='language-r' data-lang='r'><span class='nf'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='k'><a href='https://gganimate.com'>gganimate</a></span>)
 <span class='nf'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='k'><a href='https://github.com/tidyverse/glue'>glue</a></span>)
 <span class='c'>#&gt; </span>
@@ -164,9 +136,13 @@ It took Asmae 15 minutes to deploy her site, it took me about 4 hours because I&
      <span class='nf'><a href='https://gganimate.com/reference/transition_states.html'>transition_states</a></span>(<span class='k'>species</span>, transition_length = <span class='m'>2</span>, state_length = <span class='m'>3</span>) <span class='o'>+</span>
      <span class='nf'>labs</span>(subtitle = <span class='s'>"Species: {closest_state}"</span>) <span class='o'>+</span>
      <span class='nf'><a href='https://gganimate.com/reference/ease_aes.html'>ease_aes</a></span>(<span class='s'>'cubic-in-out'</span>)</code></pre>
+
 </div>
-<p>To display our animation, we just call animate()</p>
+
+To display our animation, we just call animate()
+
 <div class="highlight">
+
 <pre class='chroma'><code class='language-r' data-lang='r'><span class='nf'><a href='https://gganimate.com/reference/animate.html'>animate</a></span>(<span class='k'>p1_anim</span>)
 <span class='c'>#&gt; `geom_smooth()` using formula 'y ~ x'</span>
 <span class='c'>#&gt; Warning: Removed 2 rows containing non-finite values (stat_smooth).</span>
@@ -305,38 +281,14 @@ It took Asmae 15 minutes to deploy her site, it took me about 4 hours because I&
 <span class='c'>#&gt; Warning: Removed 1 rows containing missing values (geom_point).</span>
 <span class='c'>#&gt; Warning in (if (out_format(c("latex", "sweave", "listings"))) sanitize_fn else paste0)(path, : replaced special characters in figure filename "figs/move it" -&gt; "figs/move_it"</span>
 </code></pre>
-<p><img src="figs/move_it-1.gif" width="700px" style="display: block; margin: auto;" /></p>
+<img src="figs/move_it-1.gif" width="700px" style="display: block; margin: auto;" />
+
 </div>
-<p>And finally, we can save our simple animation locally to use later (Twitter anyone?).</p>
+
+And finally, we can save our simple animation locally to use later (Twitter anyone?).
+
 <div class="highlight">
+
 <pre class='chroma'><code class='language-r' data-lang='r'><span class='c'>#anim_save(filename = 'Rplot_animation.gif', animation = last_animation(),path = "C:\\Users\\&lt;your user name&gt;\\Desktop")</span></code></pre>
+
 </div>
-
-      </main>
-
-      <footer>
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/languages/r.min.js"></script>
-
-  <script>
-  hljs.configure({languages: []});
-  hljs.initHighlightingOnLoad();
-  </script>
-
-  <script src="//yihui.name/js/math-code.js"></script>
-<script async src="//mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-
-<script async src="//yihui.name/js/center-img.js"></script>
-
-  
-  <br/><br/>
-  A footer of one&rsquo;s own
-  <br/><br/>
-  
-</footer>
-
-
-    </div>
-  </body>
-</html>

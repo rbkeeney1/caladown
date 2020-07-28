@@ -37,5 +37,15 @@
       <description>The usual advice for deploying a blogdown or hugodown site is to deploy to Netlify rather than GitHub Pages, because there are a few peculiarities to GitHub Pages that can make it difficult. The third part of the tutorial walks you through both versions.</description>
     </item>
     
+    <item>
+      <title></title>
+      <link>/post/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/post/</guid>
+      <description>Introduction In my 1st ever TidyTuesday, I was inspired by Asmae Toumi&amp;rsquo;s (@asmae_toumi) recent twitter post to create a caladown site through github. Here&amp;rsquo;s a link to the guide she posted: Youtube Video
+It took Asmae 15 minutes to deploy her site, it took me about 4 hours because I&amp;rsquo;ve never used git or created a github repo from R before today. After learning a few new cuss words, crashing R multiple times, learning about how to remove &amp;ldquo;.</description>
+    </item>
+    
   </channel>
 </rss>
