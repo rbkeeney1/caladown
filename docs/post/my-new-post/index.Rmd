@@ -1,0 +1,9 @@
+---
+output: hugodown::md_document
+title: "my new post"
+summary: ""
+author: ""
+tags: []
+date: 2020-07-28
+---
+
