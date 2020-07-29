@@ -37,5 +37,7 @@ usethis::use_github()
 
 
 
+
 # to create a new page, use above, then knit it, then use code below and commit + push updates out
+unlink("docs", recursive = TRUE) # delete a directory -- must add recursive = TRUE
 hugodown::hugo_build(dest = "docs")
