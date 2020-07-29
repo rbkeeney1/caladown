@@ -2,25 +2,41 @@
 output: hugodown::md_document
 title: About
 type: "generic_page"
-summary: "Caladown: A Hugo theme and R package by Danielle Navarro"
-rmd_hash: e3803ccd034fe1c5
+summary: "An R, sports analytics, and data viz website by Ryan Keeney"
+rmd_hash: 6066179355ef6f86
 
 ---
 
-About the theme
-===============
-
-The calade theme started its life as a fork of Yihue Xie's Xmin theme, which I had started to tinker with because I wanted to better understand the internal workings of Hugo and blogdown. One of the things I really liked about Xmin is its simplicity. There are very few moving parts to the theme which makes it much less intimidating for novice users than (say) the academic theme, which is a wonderful theme but also a rather complicated one. After deciding that I didn't want or need all that complexity for my own website, I worked on extending the Xmin theme to have "just enough" functionality for my purposes. The visual style draws some elements from Xmin, others from academic, and others from the Tufte R markdown theme. Mostly though it was designed to suit my own aesthetic sensibilities.
-
-About the name
+About the site
 ==============
 
-After initially choosing a less-than-ideal name for the theme, I eventually settled on naming the theme *calade*, a French word referring to "harmonious, decorative and useful arrangement of medium-sized pebbles, fixed to the ground" and suggested to me by John Ormerod. It appeals to me as a metaphor for the way I like to design websites. Each page is a small object held in place by an overall structure, organised in a fashion that serves a specific, useful purpose. In addition to being functional, a good site should be aesthetically pleasing and harmonious. Also the banner images on this site kind of look like cobblestones so it seemed appropriate.
+Welcome! The goal of this site is to make my code and projects accessible to other R enthusiasts, from beginners to potential employers. If enjoy my work, there's more of it on [Twitter](https://twitter.com/rbkeeney); and, if you have a question or comment my DMs are open.
 
-The name of the *caladown* package is (obviously) in part a reference to the name of the *calade* theme, using the "-down" suffix in reference to markdown, blogdown, hugodown etc. It also has some meaning of its own. Olivia Guest pointed out that "cala" ("Καλά") means "good" in Greek, and there is something appealing about "gooddown" as a name. Matt Craddock alerted to me that in Spanish "cala" means "cove", which I really ought to have known for myself but I've forgotten almost all my Spanish. Sigh. In any case, it seems a particularly appropriate reference for the package: a sheltered bay is a safe place to moor a ship, and the primary function of caladown is to simplify the installation process.
+If you'd like to support my work, [Patreon](https://www.patreon.com/rbkeeney) is currently the best place. Once you're a member, you'll get access to NFL Analytics and Fantasy football resources such as:
+
+-   Multiple Shiny Web Apps
+-   Rookie Projections and Models
+-   Twitch Live-Streams
+-   Rookie and Player Ranks
+-   Playbooks for Redraft and Dynasty Leagues
+-   Curated Databases for Additional Analysis
+
+More R, Sports Analytics, and Data Viz Resources
+================================================
+
+Here are some of Ryan's favorite resources:
+
+-   [NFLfastR](https://mrcaseb.github.io/nflfastR/articles/beginners_guide.html)
+-   [TidyTuesday](https://thomasmock.netlify.app/post/tidytuesday-a-weekly-social-data-project-in-r/)
+-   [TidyModels](https://www.tidymodels.org/)
+-   [Yan Holtz's R Gallery](https://www.r-graph-gallery.com/)
 
 About the author
 ================
 
-[Danielle Navarro](https://djnavarro.net) is a computational cognitive scientist and Associate Professor at the University of New South Wales. Her research focuses on human reasoning and statistical methods in the behavioural sciences. On occasions she has been known to masquerade as a part-time [statistician](https://learningstatisticswithr.com), [data scientist](https://robust-tools.djnavarro.net) and an unskilled [software developer](https://github.com/djnavarro). She is also a [devoted R-Lady](https://rladiessydney.org), an [aspiring generative artist](https://art.djnavarro.net), and at times a [general purpose nuisance](https://twitter.com/djnavarro). She is prone to describing herself in the third person in biographies, but is willing to admit that it's super weird.
+[Ryan Keeney](https://twitter.com/rbkeeney) is a aspiring data scientist with a passion for sports analytics, especially (American) football. After working 6 years as a mechanical engineer at John Deere and designing the Progator GPS PrecisionSprayer, he and his wife, Lydia, took a 1-year leave of absence to volunteer in Paraguay. While they were in Paraguay, Ryan's position was terminated due to the COVID-19 crisis so they decided to stay in South America. Currently, Ryan and Lydia are enjoying Paraguay and working remotely while Ryan applies to graduate school and learns things like ggplot, SQL, Python, statistics, modeling, and Git.
+
+...y su español está mejorando. bueno, él piensa que sí.
+
+If you'd like to contact Ryan, he's generally civil on [Twitter](https://twitter.com/rbkeeney) and does keep his DMs open. If you'd like to support Ryan, [Patreon](https://www.patreon.com/rbkeeney) is still the best place.
 
