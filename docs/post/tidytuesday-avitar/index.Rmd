@@ -1,0 +1,324 @@
+---
+output: hugodown::md_document
+title: "TidyTuesday - Avitar"
+summary: "Analyzing The Setiment of Avatar's Primary Characters With Compound VADER Scores."
+author: "rbkeeney"
+tags: [nlp,TidyTuesday]
+date: 2020-08-12
+---
+
+# TidyTuesday - Avitar and Vader Sentiment Scores
+
+The August 12, 2020 [TidyTuesday](https://github.com/rfordatascience/tidytuesday/tree/master/data/2020/2020-08-11) dataset has a lot of text. It's a perfect opportunity to try out the {vader} package (now available on CRAN!) which can be used for native language processing... or text analytics for beginners like me.
+
+My goal was to analyze character sentiment by breaking down each character's lines and running them through vader. Here are a few questions that I hoped to answer along the way:
+
+1. Who are the most positive characters?
+2. Who are the most negative characters?
+3. Does character sentiment change over the duration of the series?
+
+I also wanted to explore a few new concepts such as the unique piping operators in {magrittr}, {tvthemes}, fonts, customizing themes, and improving my annotations. And while I wanted to make a word cloud in the shape of appa - that's going to have to wait until next time.
+
+## Initial Libraries
+
+The first set of libraries to load are as follows. I do load a few font and theme libraries later. But, if you want to use vader this will get you started.
+
+```{r libraries, message=FALSE, warning=FALSE}
+library(tidytuesdayR) # to get data quickly
+library(tidyverse) # no matter how dark, there is always hope
+library(magrittr) # for some more unique piping options
+library(sentimentr) # for getting sentences
+library(vader) # for vader sentiment scores
+```
+
+As always, TidyTuesday makes it easy to get the data.
+
+```{r load data, message=FALSE, warning=FALSE,results='hide'}
+tuesdata <- tidytuesdayR::tt_load('2020-08-11')
+avatar <- tuesdata$avatar
+```
+
+## Data Inspection
+
+Here I take a quick look at the data available this week:
+
+```{r data str, echo=FALSE}
+tibble::tribble(
+             ~variable,      ~class,                                    ~description,
+                  "id",   "integer",                         "Unique Row identifier",
+                "book", "character",                                     "Book name",
+            "book_num",   "integer",                                   "Book number",
+             "chapter", "character",                                  "Chapter name",
+         "chapter_num",   "integer",                                  "Chapter Name",
+           "character", "character",                            "Character speaking",
+           "full_text", "character", "Full text (scene description, character text)",
+     "character_words", "character",                   "Text coming from characters",
+              "writer", "character",                                "Writer of book",
+            "director", "character",                           "Director of episode",
+         "imdb_rating",    "double",                       "IMDB rating for episode"
+     ) %>% knitr::kable()
+```
+
+
+## Who speaks the most often?
+
+First, I ran a quick line of code to see who talked the most often and if I need to clean it up a bit. Looks like I'm going to have to remove the "Scene Description". Additionally, I plan on picking a subset of the characters to plot later and I want to see who speaks enough to be included.
+
+```{r Characters}
+avatar %>% group_by(character) %>% summarize(n=n())%>% arrange(-n) %>% head(20) %>% knitr::kable()
+```
+
+## Data prep
+
+Thanks to Avery Robbins for dataset {appa}, and there isn't much cleaning do be done, I only removed the "Scene Description". Since I'm also trying to get used to using the magrittr %<>% assignment-piping operator, this was a is was a good opportunity to start.
+ 
+```{r}
+avatar_clean <- avatar 
+avatar_clean %<>% filter(character != "Scene Description") %>% select(id:character,character_words)
+     
+dim(avatar)
+dim(avatar_clean)
+```
+## VADER compound scores
+
+Luke, I am your Father. You can read more about it vader here: [PDF](https://cran.r-project.org/web/packages/vader/vader.pdf). While it is designed for social media, it also aligns pretty well with my priors about the characters.
+
+### Step 1: Sentences. Yip yip!
+
+I'm going to include my code I used to check my process along the way. Here, I check to make sure get_sentences() is working.
+
+```{r Get Vader}
+# split out each sentences
+avatar_clean %>% head(5) %>% get_sentences() %>% knitr::kable()
+```
+
+Okay, it works. Run it.
+
+```{r avatar sentences}
+# run get_sentences() on the complete dataset
+avatar_sentences <- avatar_clean %>% get_sentences()
+```
+
+### Step 2: Check structure and test vader
+
+Check the structure of avatar_sentences to setup vader properly
+
+```{r str glimpse}
+glimpse(avatar_sentences)
+```
+
+Now for a trial run of vader_df()... notice we can pull out the the $compound column, I'll use that when I bind the data back into the avatar_sentences dataset.
+
+```{r vader test}
+avatar_sentences$character_words %>% head(5) %>% vader_df() %>% knitr::kable()
+```
+
+
+### Step 3: Cross fingers, Run Vader, Make Coffee
+
+Running it on all the sentences takes a bit of time. Go make coffee. Check Twitter. Pet the dog.
+
+```{r run vader}
+ptm <- proc.time() # Start the clock!
+vader_comp <- avatar_sentences$character_words %>% vader_df() %>% select(compound)
+proc.time() - ptm # Calc time
+```
+
+Make sure that it ran properly:
+
+```{r vader review}
+# check it visually
+vader_comp %>% arrange(-compound) %>% head(5)
+vader_comp %>% arrange(-compound) %>% tail(5)
+
+# Any failures?
+vader_comp %>% filter(is.na(compound)) # no NAs
+vader_comp %>% filter(is.nan(compound)) # no NaNs
+
+# check dims before binding
+dim(vader_comp)
+dim(avatar_sentences)
+```
+
+### Step 4: Bind
+
+Time to add the compound vader score back into our dataset and look at the top 10 instances (again). I could have done this code much more condensed; but, I kept it separated so you follow the process.
+
+```{r}
+avatar_sentences %<>% cbind(vader_comp)
+avatar_sentences %>% head(5) %>% knitr::kable()
+```
+
+Looks good!
+
+## Plot Prep
+
+As I prepare to make some plots there are few things I'd like to have available:
+
+1. An "episode" number so I can sort and chart books 1-3 because chapter numbers are repeated within each book
+2. Reordered characters - based on their median vader score so that the plots look nice.
+
+```{r Plot Prep}
+# create new sequence number for each chapter, because chapter number is repeated within each book
+unique(avatar_sentences$chapter_num)
+
+# add episode_num
+avatar_sentences %<>% 
+     mutate(episode_num = case_when(
+          book_num == 1 ~ chapter_num,
+          book_num == 2 ~ chapter_num + 21,
+          book_num == 3 ~ chapter_num + 42
+     ))
+
+# add in character vader compound median to sort
+avatar_sentences %<>% 
+     group_by(character) %>% 
+     mutate(char_vader_mean = median(compound[compound != 0])) %>% 
+     ungroup() %>% 
+     mutate(character = fct_reorder(character, -char_vader_mean))
+```
+
+## Fonts and Themes
+
+I'm very new to themes and fonts, so not everything worked as well as I'd like. I ended up using some fonts from [Google Fonts](https://fonts.google.com/) referenced this excellent [blog post](https://cedricscherer.netlify.app/2019/05/17/the-evolution-of-a-ggplot-ep.-1/) by Cédric Scherer.
+
+```{r Font and Theme Setup, message=FALSE, warning=FALSE, results='hide'}
+library(tvthemes) # great ggplot themes and color palettes
+library(showtext) # use fonts from google
+library(extrafont) # use computer fonts
+
+#font_import()
+import_avatar() # import "Slayer" font, will need to loadfonts() to access
+loadfonts(device = "win") # Load fonts, can take a minute
+
+# with {showtext}, you can load directly from google fonts
+font_add_google("Indie Flower", "Indie Flower")
+
+# Check the current search path for fonts
+#font_paths() 
+
+# List available font files in the search path
+#font_files() 
+
+# syntax: font_add(family = "<family_name>", regular = "/path/to/font/file")
+#font_add("Palatino", "pala.ttf")
+
+#font_families()
+
+showtext_auto()
+```
+
+## ggplot Bending
+
+Code for my primary plot, with comments.
+
+I should also note that I'm still working on developing my plot scaling abilities for rMarkdown, so this code might output the plots with small text for you if you scale up a too high. I often develop and save the plot (the code below), then load the image into the markdown.
+
+```{r Make Plot 1}
+p1 <- avatar_sentences %>% 
+     filter(character %in% c("Aang","Sokka","Katara","Zuko","Toph","Iroh","Azula","Jet","Suki","Mai","Ty Lee")) %>% # only wanted primary characters
+     filter(compound != 0) %>% # pulled out 0 scores, not sure if this is good process or not, but it helps with the viz and tell the story better.
+     ggplot(aes(x = character, y = compound, color = character)) +
+     geom_hline(aes(yintercept = 0), color = "black", size = 0.6) + # add line at zero (bc I pull all other lines out in the theme)
+     geom_jitter(position = position_jitter(seed = 2020,width = 0.25), size = 1, alpha = 0.15) + # add a jitter
+     #geom_boxplot(color = "black",stat = "boxplot",outlier.alpha = 0,fill=NA) + #pulled this out, decided to use the lollipops
+     geom_segment(aes(x = character, xend = character, y = 0, yend = char_vader_mean), size = 1.0,color = "black") + # line to zero from median
+     stat_summary(fun = stats::median, geom = "point", size = 5, color = "black") + # make a slightly bigger dot
+     stat_summary(fun = stats::median, geom = "point", size = 4) + # fill it in, I think i could have done this in 1x line with fill/color, but I couldn't figure it out quickly.
+     labs(
+          title = "Water. Earth. Fire. Air. Vader.",
+          subtitle = "Analyzing The Setiment of Avatar's Primary Characters With Compound VADER Scores",
+          y = "Compound Vader Scores",
+          x = NULL,
+          caption = "Data {appa} by Avery Robbins \nTidyTuesday 2020-08-11\n@rbkeeney"
+          ) +
+     theme_avatar(
+          title.font = "Indie Flower", # wanted to use slayer, but issues getting loaded.
+          title.size = 18,
+          text.font = "Indie Flower",
+          subtitle.size = 10,
+     ) +
+     theme(
+          #axis.text.x = element_text(angle = 45),
+          legend.position = "none", # remove legend
+          plot.caption = element_text(color = "grey20", size = 6), #update caption
+          panel.grid.major = element_blank(), # remove plot grids
+          panel.grid.minor = element_blank(), # remove plot grids
+          panel.border = element_rect(colour = "black",fill = NA), # box the plot. I like it. Fill = NA ~ no fill.
+          axis.line = element_line(colour = "black")
+          ) +
+     annotate("text", x = 8, y = 1, family = "Indie Flower", size = 2, color = "gray20",
+              label = "Every circle represents a sentence spoken by the character.\nA higher score correlates to positive sentiment, zero is neutral"
+              ) +
+     annotate("text", x = 1, y = 0.8, family = "Indie Flower", size = 2, color = "gray20",
+              label = "Ty Lee and Iroh\nwere the most\npostive characters"
+              ) +
+     annotate("text", x = 1, y = -0.4, family = "Indie Flower", size = 2, color = "gray20",
+              label = "All sentences \nwith a compound \nscore of 0 have \nbeen removed"
+              ) +
+     annotate("text", x = 11, y = -0.8, family = "Indie Flower", size = 2, color = "gray20",
+              label = "Mai was the only\ncharacter with a \nnegataive median \nsentiment"
+              )
+
+# match arrows to annotations... takes time, go arrow by arrow.
+p1_arrows <- tibble(
+     x1 = c(1.0, 1.0, 8.5,1,10.6),
+     x2 = c(1.0, 2.0, 8.3,1,10.9),
+     y1 = c(0.67, 0.67, 0.9,-.25,-.65), 
+     y2 = c(0.45, 0.38, 0.76,-.05,-.1)
+     )
+
+# combine into final plot
+p1_final <- p1 + geom_curve(
+     data = p1_arrows, aes(x = x1, y = y1, xend = x2, yend = y2),
+     arrow = arrow(length = unit(0.07, "inch")), size = 0.4,
+     color = "gray40", curvature = -0.2
+     )
+```
+
+```{r Plot 1, echo=FALSE}
+p1_final
+```
+
+Code for my secondary plot. Playing around with facet_wrap() this time.
+
+```{r Make Plot 2}
+p2 <- avatar_sentences %>% 
+     filter(character %in% c("Aang","Sokka","Katara","Zuko","Toph","Iroh")) %>% 
+     filter(compound != 0) %>% 
+     #filter(book == "Water") %>% 
+     ggplot(aes(x = episode_num, y = compound, color = character)) +
+     #geom_point(alpha = 0.6) +
+     #geom_jitter() +
+     geom_smooth(method = loess, se = F, formula = y ~ x) +
+     facet_wrap(~ character) + 
+     coord_cartesian(ylim = c(0,0.3)) +
+     labs(
+          title = "Water. Earth. Fire. Air. Vader.",
+          subtitle = "Analyzing The Change in Setiment Avatar's Primary Characters With Compound VADER Scores Over The\nDuration Of The Series",
+          y = "Compound VADER Scores",
+          x = "Nth Episode",
+          caption = "Data {appa} by Avery Robbins \nTidyTuesday 2020-08-11\n@rbkeeney"
+          ) +
+     theme_avatar(
+          title.font = "Indie Flower",
+          title.size = 18,
+          text.font = "Indie Flower",
+          subtitle.size = 10,
+     ) +
+     theme(
+          #axis.text.x = element_text(angle = 45),
+          legend.position = "none",
+          plot.caption = element_text(color = "grey20", size = 6),
+          panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
+          panel.border = element_rect(colour = "black",fill = NA),
+          axis.line = element_line(colour = "black")
+          )
+```
+
+```{r Plot 2, echo=FALSE}
+p2
+```
+
+That wraps it up! Cheers, Ryan

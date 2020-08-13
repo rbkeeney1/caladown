@@ -22,7 +22,7 @@ hugodown::hugo_start()
 
 
 # Create post
-use_post("post/my-new-post") # creates new index.rmd w/ folder in posts folder
+use_post("post/tidytuesday-2020-08-11") # creates new index.rmd w/ folder in posts folder
 
 # Create repo
 usethis::use_git()
