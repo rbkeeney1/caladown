@@ -28,6 +28,8 @@ use_post("post/tidytuesday-2020-08-11") # creates new index.rmd w/ folder in pos
 usethis::use_git()
 # save C:/Users/keene/Documents/R Projects/caladown
 
+
+
 # push repo out (i think)
 usethis::git_sitrep() # check auth key for github
 usethis::use_github()
@@ -37,7 +39,10 @@ usethis::use_github()
 
 
 
-
 # to create a new page, use above, then knit it, then use code below and commit + push updates out
 unlink("docs", recursive = TRUE) # delete a directory -- must add recursive = TRUE
 hugodown::hugo_build(dest = "docs")
+
+# set working directory
+setwd("C:/Users/keene/Documents/R Projects/caladown")
+
