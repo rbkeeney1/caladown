@@ -33,7 +33,7 @@ library(vader) # for vader sentiment scores
 
 As always, TidyTuesday makes it easy to get the data.
 
-```{r load data, message=FALSE, warning=FALSE,results='hide'}
+```{r load data, message=FALSE, warning=FALSE,results='hide',cache=TRUE}
 tuesdata <- tidytuesdayR::tt_load('2020-08-11')
 avatar <- tuesdata$avatar
 ```
@@ -94,7 +94,7 @@ avatar_clean %>% head(5) %>% get_sentences() %>% knitr::kable()
 
 Okay, it works. Run it.
 
-```{r avatar sentences}
+```{r avatar sentences,cache=TRUE}
 # run get_sentences() on the complete dataset
 avatar_sentences <- avatar_clean %>% get_sentences()
 ```
@@ -118,10 +118,12 @@ avatar_sentences$character_words %>% head(5) %>% vader_df() %>% knitr::kable()
 
 Running it on all the sentences takes a bit of time. Go make coffee. Check Twitter. Pet the dog.
 
-```{r run vader}
+```{r run vader,cache=TRUE}
 ptm <- proc.time() # Start the clock!
 vader_comp <- avatar_sentences$character_words %>% vader_df() %>% select(compound)
 proc.time() - ptm # Calc time
+
+#note, set "cache=TRUE" and save some time!
 ```
 
 Make sure that it ran properly:
@@ -232,33 +234,34 @@ p1 <- avatar_sentences %>%
           x = NULL,
           caption = "Data {appa} by Avery Robbins \nTidyTuesday 2020-08-11\n@rbkeeney"
           ) +
+     annotate("text", x = 8, y = 1, family = "Indie Flower", color = "gray20",lineheight = 0.5, size = 6,
+              label = "Every circle represents a sentence spoken by the character.\nA higher score correlates to positive sentiment, zero is neutral"
+              ) +
+     annotate("text", x = 1, y = 0.8, family = "Indie Flower", color = "gray20", lineheight = 0.5, size = 6,
+              label = "Ty Lee and Iroh\nwere the most\npostive characters"
+              ) +
+     annotate("text", x = 1, y = -0.4, family = "Indie Flower", color = "gray20",lineheight = 0.5, size = 6,
+              label = "All sentences \nwith a compound \nscore of 0 have \nbeen removed"
+              ) +
+     annotate("text", x = 11, y = -0.8, family = "Indie Flower", color = "gray20",lineheight = 0.5, size = 6,
+              label = "Mai was the only\ncharacter with a \nnegataive median \nsentiment"
+              ) + 
      theme_avatar(
           title.font = "Indie Flower", # wanted to use slayer, but issues getting loaded.
-          title.size = 18,
           text.font = "Indie Flower",
-          subtitle.size = 10,
+          title.size = 36,
+          subtitle.size = 24
      ) +
      theme(
-          #axis.text.x = element_text(angle = 45),
+          axis.title = element_text(size=24),
+          axis.text = element_text(size=24),
           legend.position = "none", # remove legend
-          plot.caption = element_text(color = "grey20", size = 6), #update caption
+          plot.caption = element_text(size = 16, color = "grey20",lineheight = 0.5), #update caption
           panel.grid.major = element_blank(), # remove plot grids
           panel.grid.minor = element_blank(), # remove plot grids
           panel.border = element_rect(colour = "black",fill = NA), # box the plot. I like it. Fill = NA ~ no fill.
-          axis.line = element_line(colour = "black")
-          ) +
-     annotate("text", x = 8, y = 1, family = "Indie Flower", size = 2, color = "gray20",
-              label = "Every circle represents a sentence spoken by the character.\nA higher score correlates to positive sentiment, zero is neutral"
-              ) +
-     annotate("text", x = 1, y = 0.8, family = "Indie Flower", size = 2, color = "gray20",
-              label = "Ty Lee and Iroh\nwere the most\npostive characters"
-              ) +
-     annotate("text", x = 1, y = -0.4, family = "Indie Flower", size = 2, color = "gray20",
-              label = "All sentences \nwith a compound \nscore of 0 have \nbeen removed"
-              ) +
-     annotate("text", x = 11, y = -0.8, family = "Indie Flower", size = 2, color = "gray20",
-              label = "Mai was the only\ncharacter with a \nnegataive median \nsentiment"
-              )
+          axis.line = element_line(colour = "black"),
+          )
 
 # match arrows to annotations... takes time, go arrow by arrow.
 p1_arrows <- tibble(
@@ -274,11 +277,23 @@ p1_final <- p1 + geom_curve(
      arrow = arrow(length = unit(0.07, "inch")), size = 0.4,
      color = "gray40", curvature = -0.2
      )
+
+# To create better pictures for the markdown (1) save it, and (2) then call it in markdown text with: ![alt text here](path-to-image-here)
+# for referecne, this is what roughly outputs on the screen, moving up dpi will shrink the text...
+# ggsave(p1_final, filename = "figs/Rplot1.png", dpi = 96, type = "cairo", width = 7, height = 5, units = "in")
+# dpi: 72-96 for web... 300-400 for high res stuff
+
+# save high res
+ggsave(p1_final, filename = "figs/Rplot1.png", dpi = 300, type = "cairo", width = 7, height = 5, units = "in")
+
+# open high res, for iteration (comment out once done)
+# img_1 <- magick::image_read('figs/Rplot1.png')
+# print(img_1)
 ```
 
-```{r Plot 1, echo=FALSE}
-p1_final
-```
+<!-- ![alt text here](path-to-image-here) -->
+![TidyTuesday rbkeeney plot 1, Analyzing the setiment of avatars primary characters](figs/Rplot1.png)
+
 
 Code for my secondary plot. Playing around with facet_wrap() this time.
 
@@ -295,30 +310,37 @@ p2 <- avatar_sentences %>%
      coord_cartesian(ylim = c(0,0.3)) +
      labs(
           title = "Water. Earth. Fire. Air. Vader.",
-          subtitle = "Analyzing The Change in Setiment Avatar's Primary Characters With Compound VADER Scores Over The\nDuration Of The Series",
+          subtitle = "Analyzing The Change in Setiment Avatar's Primary Characters With Compound VADER Scores Over The Duration Of The Series",
           y = "Compound VADER Scores",
           x = "Nth Episode",
           caption = "Data {appa} by Avery Robbins \nTidyTuesday 2020-08-11\n@rbkeeney"
           ) +
      theme_avatar(
           title.font = "Indie Flower",
-          title.size = 18,
+          title.size = 36,
           text.font = "Indie Flower",
-          subtitle.size = 10,
+          subtitle.size = 24,
      ) +
      theme(
-          #axis.text.x = element_text(angle = 45),
+          text = element_text(size = 28, lineheight = 0.5),
+          axis.title = element_text(size=24),
+          axis.text = element_text(size=24),
           legend.position = "none",
-          plot.caption = element_text(color = "grey20", size = 6),
+          plot.caption = element_text(color = "grey20", size = 16),
           panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
           panel.border = element_rect(colour = "black",fill = NA),
           axis.line = element_line(colour = "black")
           )
+
+ggsave(p2, filename = "figs/Rplot2.png", dpi = 300, type = "cairo", width = 7, height = 5, units = "in")
+# open high res, for iteration (comment out once done)
+#img_2 <- magick::image_read('figs/Rplot2.png')
+#print(img_2)
+
 ```
 
-```{r Plot 2, echo=FALSE}
-p2
-```
+<!-- ![alt text here](path-to-image-here) -->
+![TidyTuesday rbkeeney plot 2, Analyzing the setiment of avatars primary characters](figs/Rplot2.png)
 
 That wraps it up! Cheers, Ryan
